@@ -11,8 +11,17 @@ public class Cell {
 		return ' ';
 	}
 
+	public boolean isOpened() {
+		// TODO
+		return true;
+	}
+
 	public boolean isMine() {
 		// TODO
 		return true;
+	}
+
+	public void mark() {
+		// TODO
 	}
 }

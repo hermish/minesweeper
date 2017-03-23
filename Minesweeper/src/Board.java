@@ -61,9 +61,10 @@ public class Board {
 		// TODO
 	}
 
-	private boolean isMine(int row, int col) {
-		return board[row][col].isMine();
+	public boolean areValidIndicies(int row, int col) {
+		return row < rows && col < cols;
 	}
+
 
 	@Override 
 	public String toString() {
@@ -85,11 +86,18 @@ public class Board {
 	}
 
 	public void checkCell(int row, int col) {
-		// TODO
+		// TO FINISH
+		// Implement recursively for adjacent blank cells
 	}
 
 	public void markCell(int row, int col) {
-		// TODO
+		// TO FINISH
+		// Need to figure out what level all checking is going to happen
+		Cell target = board[row][col];
+		if (!target.isOpened()) {
+			// Do things?
+		}
+
 	}
 
 	public void save(File outFile) throws IOException{
