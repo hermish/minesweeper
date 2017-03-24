@@ -29,13 +29,12 @@ public class Board {
 		int width = Integer.parseInt(sizes[0]);
 		int length = Integer.parseInt(sizes[1]);
 		Cell[][] grid = new Cell[width][length];
-		int row = 0;
 
-		for (int r = 0; r < width; r++) {
+		for (int row = 0; row < width; row++) {
 			line = inFile.nextLine();
-			for (int c = 0; c < length; c++) {
-				char code = line.charAt(c);
-				grid[r][c] = Cell.parseCell(code);
+			for (int col = 0; col < length; col++) {
+				char code = line.charAt(col);
+				grid[row][col] = Cell.parseCell(code);
 			}
 		}
 
