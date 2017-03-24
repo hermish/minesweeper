@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Board {
+	private static final double DEFAULT_DENSITY = 0.1;
+
 	private int rows;
 	private int cols;
 	private Cell[][] board;
-
-	private static final double DEFAULT_DENSITY = 0.15;
+	private int remaining;
+	private int gameState = 0;
 
 	public Board(int size) {
 		this(size, DEFAULT_DENSITY);
@@ -42,6 +44,7 @@ public class Board {
 		if (isValidBoard(grid)) {
 			rows = width;
 			cols = length;
+			remaining = countUnopened(grid);
 			board = grid;
 		} else {
 			throw new IOException();
@@ -53,6 +56,20 @@ public class Board {
 		return true;
 	}
 
+	private static int countUnopened(Cell[][] grid) {
+		int count = 0;
+
+		for (Cell[] row : grid) {
+			for (Cell square : row) {
+				if (square.isUnopened() && square.isNormal()) {
+					count++;
+				}
+			}
+		}
+
+		return count;
+	}
+
 	private void placeMines() {
 		// TODO
 	}
@@ -61,10 +78,26 @@ public class Board {
 		// TODO
 	}
 
+	private void safeCheck(int row, int col) {
+		Cell target = board[row][col];
+
+		if (areValidIndicies(row, col) && target.isUnopened() && target.isNormal()) {
+			target.open();
+			remaining--;
+			// Note this method should clear the marking too!
+			int value = target.getNumber();
+			if (value == 0) {
+				safeCheck(row - 1, col);
+				safeCheck(row, col - 1);
+				safeCheck(row + 1, col);
+				safeCheck(row, col + 1);
+			}
+		}
+	}
+
 	public boolean areValidIndicies(int row, int col) {
 		return row < rows && col < cols;
 	}
-
 
 	@Override 
 	public String toString() {
@@ -86,23 +119,33 @@ public class Board {
 	}
 
 	public void checkCell(int row, int col) {
-		// TO FINISH
-		// Implement recursively for adjacent blank cells
+		Cell target = board[row][col];
+		
+		if (target.isUnopened()) {
+			if (target.isNormal()) {
+				safeCheck(row, col);
+			} else {
+				gameState = -1;
+			}
+		}
+
+		if (remaining == 0) {
+			gameState = 1;
+		}
 	}
 
 	public void markCell(int row, int col) {
-		// TO FINISH
-		// Need to figure out what level all checking is going to happen
 		Cell target = board[row][col];
-		if (!target.isOpened()) {
-			// Do things?
+		
+		if (target.isUnopened()) {
+			target.mark();
 		}
 
 	}
 
 	public void save(File outFile) throws IOException{
 		String header = String.format("%s %s\n", rows, cols);
-		String body = this.toString();
+		String body = toString();
 
 		FileWriter output = new FileWriter(outFile);
 		PrintWriter writer = new PrintWriter(output);
