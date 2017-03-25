@@ -3,6 +3,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Random;
 
 public class Board {
 	private static final double DEFAULT_DENSITY = 0.1;
@@ -13,12 +14,20 @@ public class Board {
 	private int remaining;
 	private int gameState = 0;
 
-	public Board(int size) {
-		this(size, DEFAULT_DENSITY);
+	public Board(int width, int length) {
+		this(width, length, DEFAULT_DENSITY);
 	}
 
-	public Board(int size, double density) {
-		// TODO
+	public Board(int width, int length, double density) {
+		Cell[][] grid = new Cell[width][length];
+		fillBlankCells(grid);
+		placeMines(grid, density);
+		generateNumbers(grid);
+
+		rows = width;
+		cols = length;
+		board = grid;
+		remaining = countUnopened(grid);
 	}
 
 	public Board(File inputFile) throws Exception{
@@ -35,6 +44,8 @@ public class Board {
 			for (int col = 0; col < length; col++) {
 				char code = line.charAt(col);
 				grid[row][col] = Cell.parseCell(code);
+				// grid[row][col] = new Cell(code);
+				// if implemented as a constructor
 			}
 		}
 
@@ -45,6 +56,7 @@ public class Board {
 			cols = length;
 			remaining = countUnopened(grid);
 			board = grid;
+
 		} else {
 			throw new IOException();
 		}
@@ -53,6 +65,60 @@ public class Board {
 	private static boolean isValidBoard(Cell[][] grid) {
 		// TODO
 		return true;
+	}
+
+	private static void validIncrement(Cell[][] grid, int row, int col) {
+		int width = grid.length;
+		int length = grid[0].length;
+
+		if (row >= 0 && row < width &&
+			col >=0 && col < length &&
+			grid[row][col].isNormal()) {
+			grid[row][col].increment();
+		}
+	}
+
+	private static void fillBlankCells(Cell[][] grid) {
+		for (Cell[] row : grid) {
+			for (Cell square : row) {
+				square = new Cell();
+			}
+		}
+	}
+
+	private static void placeMines(Cell[][] grid, double density) {
+		int width = grid.length;
+		int length = grid[0].length;
+		int area = length * width;
+		
+		int mines = (int) density * area;
+		Random rand = new Random();
+
+		for (int num = 0; num < mines; num++) {
+			int row = rand.nextInt(width + 1);
+			int col = rand.nextInt(length + 1);
+			grid[row][col].setMine();
+		}
+	}
+
+	private static void generateNumbers(Cell[][] grid) {
+		int width = grid.length;
+		int length = grid[0].length;
+
+		for (int row = 0; row < width; row++) {
+			for (int col = 0; col < length; col++) {
+				if (grid[row][col].isMine()) {
+					validIncrement(grid, row - 1, col);
+					validIncrement(grid, row, col - 1);
+					validIncrement(grid, row + 1, col);
+					validIncrement(grid, row, col + 1);
+					validIncrement(grid, row - 1, col + 1);
+					validIncrement(grid, row + 1, col - 1);
+					validIncrement(grid, row - 1, col - 1);
+					validIncrement(grid, row + 1, col + 1);
+				}
+			}
+		}
 	}
 
 	private static int countUnopened(Cell[][] grid) {
@@ -67,14 +133,6 @@ public class Board {
 		}
 
 		return count;
-	}
-
-	private void placeMines() {
-		// TODO
-	}
-
-	private void generateNumbers() {
-		// TODO
 	}
 
 	private void safeCheck(int row, int col) {
@@ -98,14 +156,14 @@ public class Board {
 		return row < rows && col < cols;
 	}
 
-	@Override 
+	@Override
 	public String toString() {
 		char[][] characterMatrix = new char[rows][cols];
 		String[] rowDisplays = new String[rows];
 
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < cols; col++) {
-				characterMatrix[row][col] = board[row][col].toChar();
+				characterMatrix[row][col] = board[row][col].toDisplay();
 			}
 		}
 
@@ -144,7 +202,21 @@ public class Board {
 
 	public void save(File outFile) throws IOException{
 		String header = String.format("%s %s\n", rows, cols);
-		String body = toString();
+		
+		char[][] charMatrix = new char[rows][cols];
+		String[] rowDisplays = new String[rows];
+
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < cols; col++) {
+				charMatrix[row][col] = board[row][col].toChar();
+			}
+		}
+
+		for (int row = 0; row < rows; row++) {
+			rowDisplays[row] = new String(charMatrix[row]);
+		}
+
+		String body = String.join("\n", rowDisplays);
 
 		FileWriter output = new FileWriter(outFile);
 		PrintWriter writer = new PrintWriter(output);
