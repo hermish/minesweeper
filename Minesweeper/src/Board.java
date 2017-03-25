@@ -135,6 +135,7 @@ public class Board {
 
 	private static boolean isValidBoard(Cell[][] grid) {
 		// TODO
+		// Do we just need to check numbers?
 		return true;
 	}
 
