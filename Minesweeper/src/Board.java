@@ -6,6 +6,7 @@ import java.util.Scanner;
 import java.util.Random;
 
 public class Board {
+
 	private static final double DEFAULT_DENSITY = 0.1;
 
 	private int rows;
@@ -209,6 +210,18 @@ public class Board {
 		}
 	}
 
+	public boolean isOn() {
+		return gameState == 0;
+	}
+
+	public boolean isWon() {
+		return gameState == 1;
+	}
+
+	public boolean isLost() {
+		return gameState == -1;
+	}
+
 	public boolean areValidIndicies(int row, int col) {
 		return row < rows && col < cols;
 	}
@@ -232,20 +245,21 @@ public class Board {
 		return output;
 	}
 
-	public void checkCell(int row, int col) {
+	public int checkCell(int row, int col) {
 		Cell target = board[row][col];
 		
 		if (target.isUnopened()) {
 			if (target.isNormal()) {
 				safeCheck(row, col);
+				if (remaining == 0) {
+					gameState = 1;
+				}
 			} else {
 				gameState = -1;
 			}
 		}
 
-		if (remaining == 0) {
-			gameState = 1;
-		}
+		return gameState;
 	}
 
 	public void markCell(int row, int col) {
