@@ -27,7 +27,7 @@ public class Board {
 		rows = width;
 		cols = length;
 		board = grid;
-		remaining = countUnopened(grid);
+		remaining = countUnopenedNormals(grid);
 	}
 
 	public Board(File inputFile) throws Exception{
@@ -54,7 +54,7 @@ public class Board {
 		if (isValidBoard(grid)) {
 			rows = width;
 			cols = length;
-			remaining = countUnopened(grid);
+			remaining = countUnopenedNormals(grid);
 			board = grid;
 
 		} else {
@@ -88,15 +88,35 @@ public class Board {
 		}
 	}
 
+	private static boolean isValidMine(Cell[][] grid, int row, int col) {
+		int width = grid.length;
+		int length = grid[0].length;
+
+		return row >= 0 && row < width && 
+			col >= 0 && col < length &&
+			grid[row][col].isMine();
+	}
+
 	private static void validIncrement(Cell[][] grid, int row, int col) {
 		int width = grid.length;
 		int length = grid[0].length;
 
 		if (row >= 0 && row < width &&
-			col >= 0 && col < length &&
-			grid[row][col].isNormal()) {
+			col >= 0 && col < length) {
+			// && grid[row][col].isNormal() increments only non-mines too!
 			grid[row][col].increment();
 		}
+	}
+
+	private static void incrementSurrounding(Cell[][] grid, int row, int col) {
+		validIncrement(grid, row - 1, col);
+		validIncrement(grid, row, col - 1);
+		validIncrement(grid, row + 1, col);
+		validIncrement(grid, row, col + 1);
+		validIncrement(grid, row - 1, col + 1);
+		validIncrement(grid, row + 1, col - 1);
+		validIncrement(grid, row - 1, col - 1);
+		validIncrement(grid, row + 1, col + 1);
 	}
 
 	private static void generateNumbers(Cell[][] grid) {
@@ -106,20 +126,13 @@ public class Board {
 		for (int row = 0; row < width; row++) {
 			for (int col = 0; col < length; col++) {
 				if (grid[row][col].isMine()) {
-					validIncrement(grid, row - 1, col);
-					validIncrement(grid, row, col - 1);
-					validIncrement(grid, row + 1, col);
-					validIncrement(grid, row, col + 1);
-					validIncrement(grid, row - 1, col + 1);
-					validIncrement(grid, row + 1, col - 1);
-					validIncrement(grid, row - 1, col - 1);
-					validIncrement(grid, row + 1, col + 1);
+					incrementSurrounding(grid, row, col);
 				}
 			}
 		}
 	}
 
-	private static int countUnopened(Cell[][] grid) {
+	private static int countUnopenedNormals(Cell[][] grid) {
 		int count = 0;
 
 		for (Cell[] row : grid) {
@@ -133,9 +146,49 @@ public class Board {
 		return count;
 	}
 
+	private static int countSurroundingMines(Cell[][] grid, int row, int col) {
+		int count = 0;
+
+		if (isValidMine(grid, row - 1, col))
+			count++;
+		if (isValidMine(grid, row, col - 1))
+			count++;
+		if (isValidMine(grid, row + 1, col))
+			count++;
+		if (isValidMine(grid, row, col + 1))
+			count++;
+		if (isValidMine(grid, row - 1, col + 1))
+			count++;
+		if (isValidMine(grid, row + 1, col - 1))
+			count++;
+		if (isValidMine(grid, row - 1, col - 1))
+			count++;
+		if (isValidMine(grid, row + 1, col + 1))
+			count++;
+
+		return count;
+	}
+
 	private static boolean isValidBoard(Cell[][] grid) {
-		// TODO
-		// Do we just need to check numbers?
+		int width = grid.length;
+		int length = grid[0].length;
+		int count = 0;
+
+		for (int row = 0; row < width; row++) {
+			for (int col = 0; col < length; col++) {
+				Cell square = grid[row][col];
+
+				if (square.isMine() && square.isOpened())
+					return false;
+				int surroundMines = countSurroundingMines(grid, row, col);
+				if (square.getNumber() != count)
+					return false;
+			}
+		}
+
+		int unopenedNormals = countUnopenedNormals(grid);
+		if (unopenedNormals == 0)
+			return false;
 		return true;
 	}
 

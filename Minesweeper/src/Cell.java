@@ -22,6 +22,11 @@ public class Cell {
 		return true;
 	}
 
+	public boolean isOpened() {
+		// TODO
+		return true;
+	}
+
 	public boolean isMine() {
 		// TODO
 		return true;
