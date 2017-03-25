@@ -58,29 +58,14 @@ public class Board {
 			board = grid;
 
 		} else {
-			throw new IOException();
-		}
-	}
-
-	private static boolean isValidBoard(Cell[][] grid) {
-		// TODO
-		return true;
-	}
-
-	private static void validIncrement(Cell[][] grid, int row, int col) {
-		int width = grid.length;
-		int length = grid[0].length;
-
-		if (row >= 0 && row < width &&
-			col >=0 && col < length &&
-			grid[row][col].isNormal()) {
-			grid[row][col].increment();
+			throw new IOException("Invalid file format!");
 		}
 	}
 
 	private static void fillBlankCells(Cell[][] grid) {
 		for (Cell[] row : grid) {
 			for (Cell square : row) {
+				// Default constructor called
 				square = new Cell();
 			}
 		}
@@ -94,10 +79,23 @@ public class Board {
 		int mines = (int) density * area;
 		Random rand = new Random();
 
+		// Note: This is a pretty bad algorithm, randomly distributed
+		// mines will result in very few clusters (revisit later)
 		for (int num = 0; num < mines; num++) {
 			int row = rand.nextInt(width + 1);
 			int col = rand.nextInt(length + 1);
 			grid[row][col].setMine();
+		}
+	}
+
+	private static void validIncrement(Cell[][] grid, int row, int col) {
+		int width = grid.length;
+		int length = grid[0].length;
+
+		if (row >= 0 && row < width &&
+			col >= 0 && col < length &&
+			grid[row][col].isNormal()) {
+			grid[row][col].increment();
 		}
 	}
 
@@ -135,13 +133,18 @@ public class Board {
 		return count;
 	}
 
+	private static boolean isValidBoard(Cell[][] grid) {
+		// TODO
+		return true;
+	}
+
 	private void safeCheck(int row, int col) {
 		Cell target = board[row][col];
 
 		if (areValidIndicies(row, col) && target.isUnopened() && target.isNormal()) {
+			// Note this method should clear the marking too!
 			target.open();
 			remaining--;
-			// Note this method should clear the marking too!
 			int value = target.getNumber();
 			if (value == 0) {
 				safeCheck(row - 1, col);
@@ -201,14 +204,15 @@ public class Board {
 	}
 
 	public void save(File outFile) throws IOException{
-		String header = String.format("%s %s\n", rows, cols);
+		// Similar to toString method
+		String header = String.format("%s %s\n", rows, cols); // Difference 1
 		
 		char[][] charMatrix = new char[rows][cols];
 		String[] rowDisplays = new String[rows];
 
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < cols; col++) {
-				charMatrix[row][col] = board[row][col].toChar();
+				charMatrix[row][col] = board[row][col].toChar(); // Difference 2
 			}
 		}
 
