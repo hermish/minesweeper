@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Board {
 
@@ -32,17 +33,31 @@ public class Board {
 	}
 
 	public Board(File inputFile) throws Exception{
+		Cell[][] grid = readFile(inputFile);
+
+		if (validateBoard(grid)) {
+			rows = grid.length;
+			cols = grid[0].length;
+			board = grid;
+			remaining = countUnopenedNormals(grid);
+
+		} else {
+			throw new IOException("Invalid file format!");
+		}
+	}
+
+	private static Cell[][] readFile(File inputFile) throws Exception{
 		Scanner inFile = new Scanner(inputFile);
 		
 		String line = inFile.nextLine();
 		String[] sizes = line.split(" ");
-		int width = Integer.parseInt(sizes[0]);
-		int length = Integer.parseInt(sizes[1]);
-		Cell[][] grid = new Cell[width][length];
+		int rows = Integer.parseInt(sizes[0]);
+		int cols = Integer.parseInt(sizes[1]);
+		Cell[][] grid = new Cell[rows][cols];
 
-		for (int row = 0; row < width; row++) {
+		for (int row = 0; row < rows; row++) {
 			line = inFile.nextLine();
-			for (int col = 0; col < length; col++) {
+			for (int col = 0; col < cols; col++) {
 				char code = line.charAt(col);
 				grid[row][col] = Cell.parseCell(code);
 				// grid[row][col] = new Cell(code);
@@ -51,16 +66,7 @@ public class Board {
 		}
 
 		inFile.close();
-
-		if (isValidBoard(grid)) {
-			rows = width;
-			cols = length;
-			remaining = countUnopenedNormals(grid);
-			board = grid;
-
-		} else {
-			throw new IOException("Invalid file format!");
-		}
+		return grid;
 	}
 
 	private static void fillBlankCells(Cell[][] grid) {
@@ -89,35 +95,28 @@ public class Board {
 		}
 	}
 
-	private static boolean isValidMine(Cell[][] grid, int row, int col) {
+	private static ArrayList<Cell> surrondingSquares(Cell[][] grid, int row, int col) {
 		int width = grid.length;
 		int length = grid[0].length;
+		int[] offsets = {-1, 1, 0};
+		int targetRow, targetCol;
 
-		return row >= 0 && row < width && 
-			col >= 0 && col < length &&
-			grid[row][col].isMine();
-	}
+		ArrayList<Cell> surroundings = new ArrayList<Cell>();
 
-	private static void validIncrement(Cell[][] grid, int row, int col) {
-		int width = grid.length;
-		int length = grid[0].length;
+		for (int deltaX : offsets) {
+			for (int deltaY : offsets) {
+				targetRow = row + deltaX;
+				targetCol = col + deltaY;
 
-		if (row >= 0 && row < width &&
-			col >= 0 && col < length) {
-			// && grid[row][col].isNormal() increments only non-mines too!
-			grid[row][col].increment();
+				if (targetRow >= 0 && targetRow < width &&
+					targetCol >= 0 && targetCol < length ) {
+					surroundings.add(grid[targetRow][targetCol]);
+				}
+			}
 		}
-	}
 
-	private static void incrementSurrounding(Cell[][] grid, int row, int col) {
-		validIncrement(grid, row - 1, col);
-		validIncrement(grid, row, col - 1);
-		validIncrement(grid, row + 1, col);
-		validIncrement(grid, row, col + 1);
-		validIncrement(grid, row - 1, col + 1);
-		validIncrement(grid, row + 1, col - 1);
-		validIncrement(grid, row - 1, col - 1);
-		validIncrement(grid, row + 1, col + 1);
+		surroundings.remove(surroundings.size() - 1);
+		return surroundings;
 	}
 
 	private static void generateNumbers(Cell[][] grid) {
@@ -127,7 +126,9 @@ public class Board {
 		for (int row = 0; row < width; row++) {
 			for (int col = 0; col < length; col++) {
 				if (grid[row][col].isMine()) {
-					incrementSurrounding(grid, row, col);
+					for (Cell square : surrondingSquares(grid, row, col)) {
+						square.increment();
+					}
 				}
 			}
 		}
@@ -149,39 +150,24 @@ public class Board {
 
 	private static int countSurroundingMines(Cell[][] grid, int row, int col) {
 		int count = 0;
-
-		if (isValidMine(grid, row - 1, col))
-			count++;
-		if (isValidMine(grid, row, col - 1))
-			count++;
-		if (isValidMine(grid, row + 1, col))
-			count++;
-		if (isValidMine(grid, row, col + 1))
-			count++;
-		if (isValidMine(grid, row - 1, col + 1))
-			count++;
-		if (isValidMine(grid, row + 1, col - 1))
-			count++;
-		if (isValidMine(grid, row - 1, col - 1))
-			count++;
-		if (isValidMine(grid, row + 1, col + 1))
-			count++;
-
+		for (Cell square : surrondingSquares(grid, row, col)) {
+			if (square.isMine()) {
+				count++;
+			}
+		}
 		return count;
 	}
 
-	private static boolean isValidBoard(Cell[][] grid) {
-		int width = grid.length;
-		int length = grid[0].length;
-		int count = 0;
+	private static boolean validateBoard(Cell[][] grid) {
+		int rows = grid.length;
+		int cols = grid[0].length;
 
-		for (int row = 0; row < width; row++) {
-			for (int col = 0; col < length; col++) {
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < cols; col++) {
 				Cell square = grid[row][col];
-
 				if (square.isMine() && square.isOpened())
 					return false;
-				int surroundMines = countSurroundingMines(grid, row, col);
+				int count = countSurroundingMines(grid, row, col);
 				if (square.getNumber() != count)
 					return false;
 			}
@@ -210,16 +196,8 @@ public class Board {
 		}
 	}
 
-	public boolean isOn() {
-		return gameState == 0;
-	}
-
-	public boolean isWon() {
-		return gameState == 1;
-	}
-
-	public boolean isLost() {
-		return gameState == -1;
+	public int getState() {
+		return gameState;
 	}
 
 	public boolean areValidIndicies(int row, int col) {
@@ -262,13 +240,14 @@ public class Board {
 		return gameState;
 	}
 
-	public void markCell(int row, int col) {
+	public boolean markCell(int row, int col) {
 		Cell target = board[row][col];
 		
 		if (target.isUnopened()) {
 			target.mark();
+			return true;
 		}
-
+		return false;
 	}
 
 	public void save(File outFile) throws IOException{
