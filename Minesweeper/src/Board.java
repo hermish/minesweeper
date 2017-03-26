@@ -32,8 +32,8 @@ public class Board {
 		remaining = countUnopenedNormals(grid);
 	}
 
-	public Board(File inputFile) throws Exception{
-		Cell[][] grid = readFile(inputFile);
+	public Board(File inputFile) throws Exception {
+		Cell[][] grid = readBoard(inputFile);
 
 		if (validateBoard(grid)) {
 			rows = grid.length;
@@ -46,7 +46,7 @@ public class Board {
 		}
 	}
 
-	private static Cell[][] readFile(File inputFile) throws Exception{
+	private static Cell[][] readBoard(File inputFile) throws Exception {
 		Scanner inFile = new Scanner(inputFile);
 		
 		String line = inFile.nextLine();
@@ -59,9 +59,7 @@ public class Board {
 			line = inFile.nextLine();
 			for (int col = 0; col < cols; col++) {
 				char code = line.charAt(col);
-				grid[row][col] = Cell.parseCell(code);
-				// grid[row][col] = new Cell(code);
-				// if implemented as a constructor
+				grid[row][col].parse(code);
 			}
 		}
 
@@ -250,7 +248,7 @@ public class Board {
 		return false;
 	}
 
-	public void save(File outFile) throws IOException{
+	public void save(File outFile) throws IOException {
 		// Similar to toString method
 		String header = String.format("%s %s\n", rows, cols); // Difference 1
 		
