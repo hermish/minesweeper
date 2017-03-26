@@ -1,15 +1,14 @@
 public class Cell {
 	// TODO: Everything
+	// Default constructor: unopened non-mine with number 0
 
-	public static Cell parseCell(char code) throws Exception{
-		// TODO
-		// Maybe implement this as a constructor?
-		return new Cell();
+	public void parse(char code) {
+		//TODO
 	}
 
 	public char toChar() {
 		//TODO
-		return 0;
+		return ' ';
 	}
 
 	public char toDisplay() {
