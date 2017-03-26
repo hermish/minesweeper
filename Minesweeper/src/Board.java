@@ -108,7 +108,7 @@ public class Board {
 				targetCol = col + deltaY;
 
 				if (targetRow >= 0 && targetRow < width
-					&& targetCol >= 0 && targetCol < length ) {
+					&& targetCol >= 0 && targetCol < length) {
 					surroundings.add(grid[targetRow][targetCol]);
 				}
 			}
@@ -180,6 +180,28 @@ public class Board {
 		return true;
 	}
 
+	private String toCharGrid(boolean readable) {
+		char[][] characterMatrix = new char[rows][cols];
+		String[] rowDisplays = new String[rows];
+
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < cols; col++) {
+				if (readable) {
+					characterMatrix[row][col] = board[row][col].toDisplay();
+				} else {
+					characterMatrix[row][col] = board[row][col].toChar();
+				}
+			}
+		}
+
+		for (int row = 0; row < rows; row++) {
+			rowDisplays[row] = new String(characterMatrix[row]);
+		}
+
+		String output = String.join("\n", rowDisplays);
+		return output;
+	}
+
 	private void safeCheck(int row, int col) {
 		Cell target = board[row][col];
 
@@ -209,21 +231,7 @@ public class Board {
 
 	@Override
 	public String toString() {
-		char[][] characterMatrix = new char[rows][cols];
-		String[] rowDisplays = new String[rows];
-
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < cols; col++) {
-				characterMatrix[row][col] = board[row][col].toDisplay();
-			}
-		}
-
-		for (int row = 0; row < rows; row++) {
-			rowDisplays[row] = new String(characterMatrix[row]);
-		}
-
-		String output = String.join("\n", rowDisplays);
-		return output;
+		return toCharGrid(true);
 	}
 
 	public int checkCell(int row, int col) {
@@ -255,22 +263,8 @@ public class Board {
 
 	public void save(File outFile) throws IOException {
 		// Similar to toString method
-		String header = String.format("%s %s\n", rows, cols); // Difference 1
-
-		char[][] charMatrix = new char[rows][cols];
-		String[] rowDisplays = new String[rows];
-
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < cols; col++) {
-				charMatrix[row][col] = board[row][col].toChar(); // Difference 2
-			}
-		}
-
-		for (int row = 0; row < rows; row++) {
-			rowDisplays[row] = new String(charMatrix[row]);
-		}
-
-		String body = String.join("\n", rowDisplays);
+		String header = String.format("%s %s\n", rows, cols);
+		String body = toCharGrid(false);
 
 		FileWriter output = new FileWriter(outFile);
 		PrintWriter writer = new PrintWriter(output);
