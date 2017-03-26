@@ -22,6 +22,7 @@
 - private static int countSurroundingMines(Cell[][] grid, int row, int col)
 - private static boolean validateBoard(Cell[][] grid)
 
+- private String toCharGrid(boolean readable)
 - private void safeCheck(int row, int col)
 
 - public int getState()
