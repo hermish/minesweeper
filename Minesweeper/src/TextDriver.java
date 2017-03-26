@@ -12,7 +12,7 @@ public class TextDriver {
 		Board game = new Board(rows, cols);
 		int code, row, col, action;
 
-		while(game.isOn()) {
+		while(game.getState() == 0) {
 			System.out.println(game);
 			System.out.println();
 

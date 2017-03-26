@@ -1,10 +1,10 @@
 import java.io.File;
 import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.io.IOException;
-import java.util.Scanner;
-import java.util.Random;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Board {
 
@@ -48,7 +48,7 @@ public class Board {
 
 	private static Cell[][] readBoard(File inputFile) throws Exception {
 		Scanner inFile = new Scanner(inputFile);
-		
+
 		String line = inFile.nextLine();
 		String[] sizes = line.split(" ");
 		int rows = Integer.parseInt(sizes[0]);
@@ -80,7 +80,7 @@ public class Board {
 		int width = grid.length;
 		int length = grid[0].length;
 		int area = length * width;
-		
+
 		int mines = (int) density * area;
 		Random rand = new Random();
 
@@ -93,7 +93,8 @@ public class Board {
 		}
 	}
 
-	private static ArrayList<Cell> surrondingSquares(Cell[][] grid, int row, int col) {
+	private static ArrayList<Cell> surrondingSquares(Cell[][] grid,
+		int row, int col) {
 		int width = grid.length;
 		int length = grid[0].length;
 		int[] offsets = {-1, 1, 0};
@@ -106,8 +107,8 @@ public class Board {
 				targetRow = row + deltaX;
 				targetCol = col + deltaY;
 
-				if (targetRow >= 0 && targetRow < width &&
-					targetCol >= 0 && targetCol < length ) {
+				if (targetRow >= 0 && targetRow < width
+					&& targetCol >= 0 && targetCol < length ) {
 					surroundings.add(grid[targetRow][targetCol]);
 				}
 			}
@@ -146,7 +147,9 @@ public class Board {
 		return count;
 	}
 
-	private static int countSurroundingMines(Cell[][] grid, int row, int col) {
+	private static int countSurroundingMines(Cell[][] grid,
+		int row, int col) {
+
 		int count = 0;
 		for (Cell square : surrondingSquares(grid, row, col)) {
 			if (square.isMine()) {
@@ -180,7 +183,8 @@ public class Board {
 	private void safeCheck(int row, int col) {
 		Cell target = board[row][col];
 
-		if (areValidIndicies(row, col) && target.isUnopened() && target.isNormal()) {
+		if (areValidIndicies(row, col)
+			&& target.isUnopened() && target.isNormal()) {
 			// Note this method should clear the marking too!
 			target.open();
 			remaining--;
@@ -199,7 +203,8 @@ public class Board {
 	}
 
 	public boolean areValidIndicies(int row, int col) {
-		return row < rows && col < cols;
+		return row >= 0 && row < rows
+			&& col >= 0 && col < cols;
 	}
 
 	@Override
@@ -223,7 +228,7 @@ public class Board {
 
 	public int checkCell(int row, int col) {
 		Cell target = board[row][col];
-		
+
 		if (target.isUnopened()) {
 			if (target.isNormal()) {
 				safeCheck(row, col);
@@ -240,7 +245,7 @@ public class Board {
 
 	public boolean markCell(int row, int col) {
 		Cell target = board[row][col];
-		
+
 		if (target.isUnopened()) {
 			target.mark();
 			return true;
@@ -251,7 +256,7 @@ public class Board {
 	public void save(File outFile) throws IOException {
 		// Similar to toString method
 		String header = String.format("%s %s\n", rows, cols); // Difference 1
-		
+
 		char[][] charMatrix = new char[rows][cols];
 		String[] rowDisplays = new String[rows];
 
