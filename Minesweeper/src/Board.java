@@ -9,12 +9,15 @@ import java.util.Scanner;
 public class Board {
 
 	private static final double DEFAULT_DENSITY = 0.1;
+	private enum State {
+		WON, ONGOING, LOST
+	}
 
 	private int rows;
 	private int cols;
 	private Cell[][] board;
 	private int remaining;
-	private int gameState = 0;
+	private State gameState = State.ONGOING;
 
 	public Board(int width, int length) {
 		this(width, length, DEFAULT_DENSITY);
@@ -221,7 +224,16 @@ public class Board {
 	}
 
 	public int getState() {
-		return gameState;
+		switch (gameState) {
+			case WON:
+				return 1;
+			case ONGOING:
+				return 0;
+			case LOST:
+				return -1;
+			default:
+				return 0;
+		}
 	}
 
 	public boolean areValidIndicies(int row, int col) {
@@ -241,14 +253,14 @@ public class Board {
 			if (target.isNormal()) {
 				safeCheck(row, col);
 				if (remaining == 0) {
-					gameState = 1;
+					gameState = State.WON;
 				}
 			} else {
-				gameState = -1;
+				gameState = State.LOST;
 			}
 		}
 
-		return gameState;
+		return getState();
 	}
 
 	public boolean markCell(int row, int col) {
