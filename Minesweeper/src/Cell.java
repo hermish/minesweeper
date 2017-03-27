@@ -40,8 +40,23 @@ public class Cell {
 		}
 		else{
 			isFlag=false;
+		}	
+	}
+
+	public char toDisplay() {
+		if(isOpen) {
+			if (isFlag) {
+				return '?';
+			} else {
+				return '*';
+			}
+		} else {
+			if (isMine) {
+				return 'x';
+			} else {
+				return (char) displayMines;
+			}
 		}
-		
 	}
 
 	public char toChar() {
