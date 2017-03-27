@@ -2,11 +2,14 @@
 
 ## Board
 1. Variables
+- private static final double DEFAULT_DENSITY
+- private enum State
+
 - private int rows
 - private int cols
 - private Cell[][] board
 - private int remaining
-- private int gameState = 0
+- private int gameState
 
 2. Methods
 - public Board(int width, int length)
