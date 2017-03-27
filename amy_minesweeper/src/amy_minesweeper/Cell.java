@@ -1,3 +1,4 @@
+package amy_minesweeper;
 
 public class Cell {
 	
