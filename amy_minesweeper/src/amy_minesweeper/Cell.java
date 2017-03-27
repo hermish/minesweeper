@@ -3,8 +3,7 @@ package amy_minesweeper;
 public class Cell {
 	
 	//Letting x represent mines, f represent flagged cells for toDisplay
-	//Letting 0 represent flagged mines, f represent flagged non-mines, X represent unopened unflagged mines, x represent unopened unflagged non-mines, O represent opened mines
-	
+
 	private boolean isMine;
 	private boolean isFlag;
 	private boolean isOpen;
@@ -18,48 +17,42 @@ public class Cell {
 	}
 	
 	public void parse(char code) {
+		int result = (int) code;
+		displayMines = result/10;
+		int remainder = result % 10;
 		
+		if ((remainder/4)==1){
+			isMine = true;
+		}
+		else{
+			isMine=false;
+		}
+		
+		remainder/=2;
+		if ((remainder/2)==1){
+			isOpen = true;
+		}
+		else{
+			isOpen = false;
+		}
+		remainder/=2;
+		if (remainder==1){
+			isFlag=true;
+		}
+		else{
+			isFlag=false;
+		}
 		
 	}
 
 	public char toChar() {
-		char 
-		if (isMine){
-			if (isOpen){
-				if (isFlag){
-					
-				}
-				return 'O';
-			}
-			return (char)displayMines;
-		}
+		int mine = (isMine) ? 1 : 0;
+		int open = (isOpen) ? 1 : 0;
+		int flag = (isFlag) ? 1 : 0;
 		
-		else if (isFlag){
-			if (isMine){
-				return 'F';
-			}
-			return 'f';
-		}
+		int result = (mine*4+open*2+flag*1)*10+displayMines;
+		return (char) result;
 		
-		if (isMine){
-			return 'X';
-		}
-		return 'x';
-	}
-
-	public char toDisplay() {
-		if (isOpen){
-			if (isMine){
-				return 'x';
-			}
-			return (char)displayMines;
-		}
-		else if (isFlag){
-			return 'f';
-		}
-		return ' ';
-			
-		//note for later: displaying all mines after game over?
 	}
 
 	public boolean isUnopened() {
