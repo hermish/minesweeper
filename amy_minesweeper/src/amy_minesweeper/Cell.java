@@ -3,13 +3,12 @@ package amy_minesweeper;
 public class Cell {
 	
 	//Letting x represent mines, f represent flagged cells for toDisplay
-	//Letting F represent flagged mines, f represent flagged non-mines, X represent unopened unflagged mines, x represent unopened unflagged non-mines, O represent opened mines
+	//Letting 0 represent flagged mines, f represent flagged non-mines, X represent unopened unflagged mines, x represent unopened unflagged non-mines, O represent opened mines
 	
 	private boolean isMine;
 	private boolean isFlag;
 	private boolean isOpen;
 	private int displayMines;
-	
 	
 	public Cell(){
 		isMine = false;
@@ -18,13 +17,18 @@ public class Cell {
 		displayMines = 0;
 	}
 	
-	public static Cell parseCell(char code) throws Exception{
-		return new Cell();
+	public void parse(char code) {
+		
+		
 	}
 
 	public char toChar() {
-		if (isOpen){
-			if (isMine){
+		char 
+		if (isMine){
+			if (isOpen){
+				if (isFlag){
+					
+				}
 				return 'O';
 			}
 			return (char)displayMines;
