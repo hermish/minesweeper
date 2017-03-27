@@ -1,59 +1,92 @@
-public class Cell {
-	// TODO: Everything
-	// Default constructor: unopened non-mine with number 0
 
+public class Cell {
+	
+	//Letting x represent mines, f represent flagged cells for toDisplay
+
+	private boolean isMine;
+	private boolean isFlag;
+	private boolean isOpen;
+	private int displayMines;
+	
+	public Cell(){
+		isMine = false;
+		isOpen = false;
+		isFlag = false;
+		displayMines = 0;
+	}
+	
 	public void parse(char code) {
-		//TODO
+		int result = (int) code;
+		displayMines = result/10;
+		int remainder = result % 10;
+		
+		if ((remainder/4)==1){
+			isMine = true;
+		}
+		else{
+			isMine=false;
+		}
+		
+		remainder/=2;
+		if ((remainder/2)==1){
+			isOpen = true;
+		}
+		else{
+			isOpen = false;
+		}
+		remainder/=2;
+		if (remainder==1){
+			isFlag=true;
+		}
+		else{
+			isFlag=false;
+		}
+		
 	}
 
 	public char toChar() {
-		//TODO
-		return ' ';
-	}
-
-	public char toDisplay() {
-		// TODO
-		return ' ';
+		int mine = (isMine) ? 1 : 0;
+		int open = (isOpen) ? 1 : 0;
+		int flag = (isFlag) ? 1 : 0;
+		
+		int result = (mine*4+open*2+flag*1)*10+displayMines;
+		return (char) result;
+		
 	}
 
 	public boolean isUnopened() {
-		// TODO
-		return true;
+		return !isOpen;
 	}
 
 	public boolean isOpened() {
-		// TODO
-		return true;
+		return isOpen;
 	}
 
 	public boolean isMine() {
-		// TODO
-		return true;
+		return isMine;
 	}
 
 	public boolean isNormal() {
-		// TODO
-		return true;
+		return !isMine;
 	}
 
 	public void open() {
-		// TODO
+		isOpen = true;
 	}
 
 	public int getNumber() {
-		// TODO
-		return 0;
+		return displayMines;
 	}
 
 	public void mark() {
-		// TODO
+		isFlag = true;
 	}
 
 	public void setMine() {
-		// TODO
+		isMine = true;
 	}
 
 	public void increment() {
-		// TODO
+		displayMines += 1;
 	}
 }
