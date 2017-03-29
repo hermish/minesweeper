@@ -25,14 +25,15 @@ public class Board {
 
 	public Board(int width, int length, double density) {
 		Cell[][] grid = new Cell[width][length];
-		fillBlankCells(grid);
-		placeMines(grid, density);
-		generateNumbers(grid);
-
 		rows = width;
 		cols = length;
 		board = grid;
-		remaining = countUnopenedNormals(grid);
+		
+		fillBlankCells(board);
+		placeMines(board, density);
+		generateNumbers(board);
+
+		remaining = countUnopenedNormals(board);
 	}
 
 	public Board(File inputFile) throws Exception {
@@ -71,10 +72,10 @@ public class Board {
 	}
 
 	private static void fillBlankCells(Cell[][] grid) {
-		for (Cell[] row : grid) {
-			for (Cell square : row) {
+		for (int row=0;row<grid.length;row++) {
+			for (int col=0; col<grid[row].length;col++) {
 				// Default constructor called
-				square = new Cell();
+				gird[row][col] = new Cell();
 			}
 		}
 	}
