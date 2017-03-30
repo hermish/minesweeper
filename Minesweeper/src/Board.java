@@ -75,7 +75,7 @@ public class Board {
 		for (int row=0;row<grid.length;row++) {
 			for (int col=0; col<grid[row].length;col++) {
 				// Default constructor called
-				gird[row][col] = new Cell();
+				grid[row][col] = new Cell();
 			}
 		}
 	}
