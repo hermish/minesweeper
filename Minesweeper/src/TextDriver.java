@@ -12,7 +12,7 @@ public class TextDriver {
 		Board game = new Board(rows, cols);
 		int code, row, col, action;
 
-		while(game.getState() == 0) {
+		while (game.getState() == 0) {
 			System.out.println(game);
 			System.out.println();
 
@@ -33,6 +33,12 @@ public class TextDriver {
 			}
 			
 			System.out.println();
+		}
+
+		if (game.getState() == 1) {
+			System.out.println("You win!");
+		} else {
+			System.out.println("Better luck next time!");
 		}
 
 		input.close();
