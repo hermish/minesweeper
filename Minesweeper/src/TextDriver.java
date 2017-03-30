@@ -31,6 +31,7 @@ public class TextDriver {
 					}
 				} else {
 					System.out.println("Enter a valid square next time.");
+
 				}
 				
 				System.out.println();
