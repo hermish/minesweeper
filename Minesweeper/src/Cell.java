@@ -44,7 +44,7 @@ public class Cell {
 	}
 
 	public char toDisplay() {
-		if(isOpen) {
+		if(!isOpen) {
 			if (isFlag) {
 				return '?';
 			} else {
@@ -54,7 +54,7 @@ public class Cell {
 			if (isMine) {
 				return 'x';
 			} else {
-				return (char) displayMines;
+				return (char) ('0' + displayMines);
 			}
 		}
 	}

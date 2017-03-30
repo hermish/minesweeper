@@ -31,14 +31,21 @@ public class TextDriver {
 					}
 				} else {
 					System.out.println("Enter a valid square next time.");
+
 				}
 				
 				System.out.println();
 			}
-	
+
+			if (game.getState() == 1) {
+				System.out.println("You win!");
+			} else {
+				System.out.println("Better luck next time!");
+			}			
+			
 			input.close();
-		}
-		catch(Exception e){
+		} catch(Exception e) {
+			System.out.println("Oops! Something went wrong!");
 			System.out.println(e.getMessage());
 		}
 	}

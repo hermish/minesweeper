@@ -25,14 +25,14 @@ public class Board {
 
 	public Board(int width, int length, double density) {
 		Cell[][] grid = new Cell[width][length];
+		
+		fillBlankCells(grid);
+		placeMines(grid, density);
+		generateNumbers(grid);
+
 		rows = width;
 		cols = length;
 		board = grid;
-		
-		fillBlankCells(board);
-		placeMines(board, density);
-		generateNumbers(board);
-
 		remaining = countUnopenedNormals(board);
 	}
 
@@ -72,8 +72,8 @@ public class Board {
 	}
 
 	private static void fillBlankCells(Cell[][] grid) {
-		for (int row=0;row<grid.length;row++) {
-			for (int col=0; col<grid[row].length;col++) {
+		for (int row=0; row < grid.length; row++) {
+			for (int col=0; col < grid[row].length; col++) {
 				// Default constructor called
 				grid[row][col] = new Cell();
 			}
@@ -85,14 +85,14 @@ public class Board {
 		int length = grid[0].length;
 		int area = length * width;
 
-		int mines = (int) density * area;
+		int mines = (int) (density * area);
 		Random rand = new Random();
 
 		// Note: This is a pretty bad algorithm, randomly distributed
 		// mines will result in very few clusters (revisit later)
 		for (int num = 0; num < mines; num++) {
-			int row = rand.nextInt(width + 1);
-			int col = rand.nextInt(length + 1);
+			int row = rand.nextInt(width);
+			int col = rand.nextInt(length);
 			grid[row][col].setMine();
 		}
 	}
