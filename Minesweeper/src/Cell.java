@@ -1,5 +1,6 @@
+import javafx.scene.control.Button;
 
-public class Cell {
+public class Cell extends Button{
 	
 	//Letting x represent mines, f represent flagged cells for toDisplay
 
@@ -7,12 +8,16 @@ public class Cell {
 	private boolean isFlag;
 	private boolean isOpen;
 	private int displayMines;
+	private int row=0;
+	private int col=0;
 	
-	public Cell(){
+	public Cell(int row, int col){
 		isMine = false;
 		isOpen = false;
 		isFlag = false;
 		displayMines = 0;
+		this.row = row;
+		this.col = col;
 	}
 	
 	public void parse(char code) {
@@ -103,5 +108,13 @@ public class Cell {
 
 	public void increment() {
 		displayMines += 1;
+	}
+	
+	public int getRow(){
+		return row;
+	}
+	
+	public int getCol(){
+		return col;
 	}
 }

@@ -75,7 +75,7 @@ public class Board {
 		for (int row=0; row < grid.length; row++) {
 			for (int col=0; col < grid[row].length; col++) {
 				// Default constructor called
-				grid[row][col] = new Cell();
+				grid[row][col] = new Cell(row,col);
 			}
 		}
 	}
@@ -207,21 +207,23 @@ public class Board {
 	}
 
 	private void safeCheck(int row, int col) {
-		Cell target = board[row][col];
+		//Cell target = board[row][col];
 
-		if (areValidIndicies(row, col)
-			&& target.isUnopened() && target.isNormal()) {
-			// Note this method should clear the marking too!
-			target.open();
-			remaining--;
-			int value = target.getNumber();
-			if (value == 0) {
-				safeCheck(row - 1, col);
-				safeCheck(row, col - 1);
-				safeCheck(row + 1, col);
-				safeCheck(row, col + 1);
+		if (areValidIndicies(row, col)){
+			Cell target = board[row][col];
+			if(target.isUnopened() && target.isNormal()){
+				target.open();
+				remaining--;
+				int value = target.getNumber();
+				if (value == 0) {
+					safeCheck(row - 1, col);
+					safeCheck(row, col - 1);
+					safeCheck(row + 1, col);
+					safeCheck(row, col + 1);
+				}
 			}
 		}
+			
 	}
 
 	public int getState() {
@@ -284,5 +286,9 @@ public class Board {
 
 		writer.print(header);
 		writer.print(body);
+	}
+	
+	public Cell[][] getBoard(){
+		return board;
 	}
 }
