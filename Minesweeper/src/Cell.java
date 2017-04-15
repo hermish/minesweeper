@@ -2,7 +2,7 @@ import javafx.scene.control.Button;
 
 public class Cell extends Button{
 	
-	//Letting x represent mines, f represent flagged cells for toDisplay
+	//Letting x represent mines, ? represent flagged cells for toDisplay
 
 	private boolean isMine;
 	private boolean isFlag;
@@ -55,13 +55,16 @@ public class Cell extends Button{
 			} else {
 				return '*';
 			}
-		} else {
+		} 
+		else {
 			if (isMine) {
 				return 'x';
 			} else {
-				return (char) ('0' + displayMines);
+				return (char) ('0'+displayMines);
+			
 			}
 		}
+		
 	}
 
 	public char toChar() {

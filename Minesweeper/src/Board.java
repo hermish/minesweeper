@@ -97,7 +97,7 @@ public class Board {
 		}
 	}
 
-	private static ArrayList<Cell> surrondingSquares(Cell[][] grid,
+	private static ArrayList<Cell> surroundingSquares(Cell[][] grid,
 		int row, int col) {
 		int width = grid.length;
 		int length = grid[0].length;
@@ -129,7 +129,7 @@ public class Board {
 		for (int row = 0; row < width; row++) {
 			for (int col = 0; col < length; col++) {
 				if (grid[row][col].isMine()) {
-					for (Cell square : surrondingSquares(grid, row, col)) {
+					for (Cell square : surroundingSquares(grid, row, col)) {
 						square.increment();
 					}
 				}
@@ -155,7 +155,7 @@ public class Board {
 		int row, int col) {
 
 		int count = 0;
-		for (Cell square : surrondingSquares(grid, row, col)) {
+		for (Cell square : surroundingSquares(grid, row, col)) {
 			if (square.isMine()) {
 				count++;
 			}
@@ -207,7 +207,6 @@ public class Board {
 	}
 
 	private void safeCheck(int row, int col) {
-		//Cell target = board[row][col];
 
 		if (areValidIndicies(row, col)){
 			Cell target = board[row][col];
@@ -216,10 +215,14 @@ public class Board {
 				remaining--;
 				int value = target.getNumber();
 				if (value == 0) {
+					safeCheck(row - 1, col-1);
 					safeCheck(row - 1, col);
-					safeCheck(row, col - 1);
+					safeCheck(row - 1, col+1);
+					safeCheck(row, col-1);
+					safeCheck(row, col+1);
+					safeCheck(row + 1, col-1);
 					safeCheck(row + 1, col);
-					safeCheck(row, col + 1);
+					safeCheck(row + 1, col+1);
 				}
 			}
 		}
