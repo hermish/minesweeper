@@ -3,6 +3,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
@@ -43,19 +45,34 @@ public class Screen extends Application{
 	}
 	
 	private void createBoard(){
+		if (board.getState()==1){
+			System.out.println("You Won!");
+		}
+		else if (board.getState()==-1){
+			System.out.println("Game Over :(");
+		}
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 7; j++) {
-				//System.out.println(i+" "+j);
+				
 					board.getBoard()[i][j].setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 					board.getBoard()[i][j].setStyle("-fx-base: #C0C0C0;");
 					board.getBoard()[i][j].setText(Character.toString(board.getBoard()[i][j].toDisplay()));
-					board.getBoard()[i][j].setOnAction(new EventHandler<ActionEvent>() {
-			            @Override
-			            public void handle(ActionEvent event) {
+					board.getBoard()[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
+						@Override
+			            public void handle(MouseEvent event) {
 			            	Cell eventCell = (Cell)event.getSource();
-			            	System.out.println(eventCell.getRow()+" "+eventCell.getCol());
-				            revealCell(eventCell.getRow(),eventCell.getCol());
-				            createBoard();
+			            	if (event.getEventType().equals(MouseEvent.MOUSE_CLICKED)){
+			            		if(((MouseEvent) event).getButton().equals(MouseButton.PRIMARY)){
+			            			//System.out.println(eventCell.getRow()+" "+eventCell.getCol());
+						            revealCell(eventCell.getRow(),eventCell.getCol());
+						            createBoard();
+			            		}
+			            		else if (((MouseEvent) event).getButton().equals(MouseButton.SECONDARY)){
+			                        markCell(eventCell.getRow(),eventCell.getCol());
+			                        createBoard();
+			            		}
+			            	}
+			       
 			            }
 					});
 			}
@@ -65,25 +82,23 @@ public class Screen extends Application{
 	private void revealCell(int row, int col){
 		if (board.areValidIndicies(row, col)){
 			Cell cell = board.getBoard()[row][col];
-			if (cell.isUnopened() && cell.isNormal()){
-				board.checkCell(row,col);
-				//cell.setText(Character.toString(cell.toDisplay()));
-				System.out.println(row + " " + col);
-				/**if(cell.getNumber()==0){
-					revealCell(cell.getRow() - 1, cell.getCol() - 1);
-					revealCell(cell.getRow() - 1, cell.getCol());
-					revealCell(cell.getRow() - 1, cell.getCol() + 1);
-					revealCell(cell.getRow(), cell.getCol() - 1);
-					revealCell(cell.getRow(), cell.getCol() + 1);
-					revealCell(cell.getRow() + 1, cell.getCol() - 1);
-					revealCell(cell.getRow() + 1, cell.getCol());
-					revealCell(cell.getRow() + 1, cell.getCol() + 1);
-				}**/
-			} else if (cell.isMine()){
-				System.out.println("Game Over");
-			}
+			
+			board.checkCell(row,col);
+			System.out.println(row + " " + col);
+			
 		}
-		
+	}
+	
+	private void markCell(int row, int col){
+		if (board.areValidIndicies(row, col)){
+			Cell cell = board.getBoard()[row][col];
+			
+			if (cell.isUnopened()){
+				board.markCell(row,col);
+				System.out.println(row + " " + col);
+			} 
+
+		}
 	}
 	
 }

@@ -263,6 +263,11 @@ public class Board {
 				}
 			} else {
 				gameState = State.LOST;
+				for (Cell[] r : board) {
+					for (Cell square : r) {
+						square.open();
+					}
+				}
 			}
 		}
 
