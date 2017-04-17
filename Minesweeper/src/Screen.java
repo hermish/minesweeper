@@ -162,7 +162,6 @@ public class Screen extends Application{
 		}
 		else if (board.getState()==-1){
 			System.out.println("Game Over :(");
-			System.exit(0);
 		}
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
@@ -174,6 +173,13 @@ public class Screen extends Application{
 					if (cell.isOpened()){
 						cell.setStyle("-fx-base:#A9A9A9");
 						cell.setTextFill(Color.LIGHTGRAY);
+						if (cell.isMine()){
+							cell.setStyle("-fx-base:#ff4c4c");
+						}
+					}
+					
+					if (cell.isMarked()){
+						cell.setStyle("-fx-base:#ffe5e5");
 					}
 					board.getBoard()[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
 						@Override

@@ -16,10 +16,9 @@
 - public char toChar()
 - public char toDisplay()
 
-- public boolean isUnopened()
 - public boolean isOpened()
 - public boolean isMine()
-- public boolean isNormal()
+- public boolean isMarked()
 - public int getNumber()
 - public int getRow()
 - public int getColumn()
