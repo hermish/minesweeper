@@ -27,15 +27,15 @@ public class Screen extends Application{
 	
 	private static final double BUTTON_WIDTH = 150;
 	private static final double BUTTON_HEIGHT = 150;
-	private static int rows=7;
-	private static int cols=7;
-	private static Board board=new Board(rows,cols);
+	private static int rows = 7;
+	private static int cols = 7;
+	private static Board board = new Board(rows,cols);
 	
 	public static void main(String[] args) {	
-		//System.out.println(javafx.scene.text.Font.getFamilies());
 		launch(args);
 	}
 
+	// Note that this originally creates a gridPane for user input, then calls setBoard to create the gameboard
 	@Override
 	public void start(Stage primaryStage) throws Exception {				
 		//Asking user for specifications
@@ -108,9 +108,10 @@ public class Screen extends Application{
 		primaryStage.toFront();
 	}
 	
+	//Creates GridPane for game board, sets scene of primaryStage to be the game board
 	private void setBoard(Stage primaryStage){
 		GridPane gridPaneGame = new GridPane();
-		Scene gameBoard = new Scene(gridPaneGame,500,500);	
+		Scene gameBoard = new Scene(gridPaneGame,cols*30,(rows*30)+40);	
 		gridPaneGame.setAlignment(Pos.TOP_CENTER);
 		
 		Button restart = new Button("Restart Game");
@@ -153,6 +154,7 @@ public class Screen extends Application{
 		primaryStage.setScene(gameBoard);
 	}
 	
+	//This creates a board by initializing all the buttons in the private variable board
 	private void createBoard(){
 		
 		if (board.getState()==1){
@@ -163,10 +165,22 @@ public class Screen extends Application{
 		}
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				
-					board.getBoard()[i][j].setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-					board.getBoard()[i][j].setText(Character.toString(board.getBoard()[i][j].toDisplay()));
-					board.getBoard()[i][j].setFont(Font.font("Avenir"));
+					
+				Cell cell = board.getBoard()[i][j];
+					cell.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+					cell.setText(Character.toString(board.getBoard()[i][j].toDisplay()));
+					cell.setFont(Font.font("Avenir"));
+					if (cell.isOpened()){
+						cell.setStyle("-fx-base:#A9A9A9");
+						cell.setTextFill(Color.LIGHTGRAY);
+						if (cell.isMine()){
+							cell.setStyle("-fx-base:#ff4c4c");
+						}
+					}
+					
+					if (cell.isMarked()){
+						cell.setStyle("-fx-base:#ffe5e5");
+					}
 					board.getBoard()[i][j].setOnMouseClicked(new EventHandler<MouseEvent>(){
 						@Override
 			            public void handle(MouseEvent event) {
@@ -188,15 +202,14 @@ public class Screen extends Application{
 		}
 	}
 
+	//Reveals a cell if this is called (if a button is clicked)
 	private void revealCell(int row, int col){
 		if (board.areValidIndicies(row, col)){
-
 			board.checkCell(row,col);
-			System.out.println(row + " " + col);
-			
 		}
 	}
 	
+	//Marks a cell if this method is called (if a button is right clicked)
 	private void markCell(int row, int col){
 		if (board.areValidIndicies(row, col)){
 			board.markCell(row,col);

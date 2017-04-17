@@ -48,6 +48,15 @@ public class Cell extends Button{
 		}	
 	}
 
+	public char toChar() {
+		int mine = (isMine) ? 1 : 0;
+		int open = (isOpen) ? 1 : 0;
+		int flag = (isFlag) ? 1 : 0;
+		
+		int result = (mine*4+open*2+flag*1)*10+displayMines;
+		return (char) result;
+	}
+	
 	public char toDisplay() {
 		if(!isOpen) {
 			if (isFlag) {
@@ -67,20 +76,6 @@ public class Cell extends Button{
 		
 	}
 
-	public char toChar() {
-		int mine = (isMine) ? 1 : 0;
-		int open = (isOpen) ? 1 : 0;
-		int flag = (isFlag) ? 1 : 0;
-		
-		int result = (mine*4+open*2+flag*1)*10+displayMines;
-		return (char) result;
-		
-	}
-
-	public boolean isUnopened() {
-		return !isOpen;
-	}
-
 	public boolean isOpened() {
 		return isOpen;
 	}
@@ -89,18 +84,26 @@ public class Cell extends Button{
 		return isMine;
 	}
 
-	public boolean isNormal() {
-		return !isMine;
-	}
-
-	public void open() {
-		isOpen = true;
+	public boolean isMarked() {
+		return isFlag;
 	}
 
 	public int getNumber() {
 		return displayMines;
 	}
+	
+	public int getRow(){
+		return row;
+	}
+	
+	public int getCol(){
+		return col;
+	}
 
+	public void open() {
+		isOpen = true;
+	}
+	
 	public void mark() {
 		isFlag = true;
 	}
@@ -113,11 +116,4 @@ public class Cell extends Button{
 		displayMines += 1;
 	}
 	
-	public int getRow(){
-		return row;
-	}
-	
-	public int getCol(){
-		return col;
-	}
 }

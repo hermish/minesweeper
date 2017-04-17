@@ -142,7 +142,7 @@ public class Board {
 
 		for (Cell[] row : grid) {
 			for (Cell square : row) {
-				if (square.isUnopened() && square.isNormal()) {
+				if (!square.isOpened() && !square.isMine()) {
 					count++;
 				}
 			}
@@ -210,7 +210,7 @@ public class Board {
 
 		if (areValidIndicies(row, col)){
 			Cell target = board[row][col];
-			if(target.isUnopened() && target.isNormal()){
+			if(!target.isOpened() && !target.isMine()){
 				target.open();
 				remaining--;
 				int value = target.getNumber();
@@ -241,6 +241,10 @@ public class Board {
 				return 0;
 		}
 	}
+	
+	public Cell[][] getBoard(){
+		return board;
+	}
 
 	public boolean areValidIndicies(int row, int col) {
 		return row >= 0 && row < rows
@@ -255,8 +259,8 @@ public class Board {
 	public int checkCell(int row, int col) {
 		Cell target = board[row][col];
 
-		if (target.isUnopened()) {
-			if (target.isNormal()) {
+		if (!target.isOpened()) {
+			if (!target.isMine()) {
 				safeCheck(row, col);
 				if (remaining == 0) {
 					gameState = State.WON;
@@ -277,7 +281,7 @@ public class Board {
 	public boolean markCell(int row, int col) {
 		Cell target = board[row][col];
 
-		if (target.isUnopened()) {
+		if (!target.isOpened()) {
 			target.mark();
 			return true;
 		}
@@ -296,7 +300,4 @@ public class Board {
 		writer.print(body);
 	}
 	
-	public Cell[][] getBoard(){
-		return board;
-	}
 }
